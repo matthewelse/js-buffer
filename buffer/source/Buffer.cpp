@@ -229,6 +229,22 @@ DECLARE_CLASS_FUNCTION(Buffer, setFloat64) {
     return jerry_create_undefined();
 }
 
+DECLARE_CLASS_FUNCTION(Buffer, toUint8Array) {
+    CHECK_ARGUMENT_COUNT(Buffer, toUint8Array, (args_count == 0));
+
+    uintptr_t native_ptr;
+    jerry_get_object_native_handle(this_obj, &native_ptr);
+
+    buffer_t* buf = (buffer_t*)native_ptr;
+    jerry_value_t array = jerry_create_array(buf->length);
+
+    for (size_t i = 0; i < buf.length; i++) {
+        jerry_set_property_by_index(array, jerry_create_number_value(buf.buffer[i]));
+    }
+
+    return array;
+}
+
 void NAME_FOR_CLASS_NATIVE_DESTRUCTOR(Buffer) (uintptr_t handle) {
     delete[] (buffer_t*)handle->buffer;
     delete (buffer_t*)handle;
@@ -263,6 +279,8 @@ DECLARE_CLASS_CONSTRUCTOR(Buffer) {
     ATTACH_CLASS_FUNCTION(js_object, Buffer, setUint32);
     ATTACH_CLASS_FUNCTION(js_object, Buffer, setFloat32);
     ATTACH_CLASS_FUNCTION(js_object, Buffer, setFloat64);
+
+    ATTACH_CLASS_FUNCTION(js_object, Buffer, toUint8Array);
 
     return js_object;
 }
