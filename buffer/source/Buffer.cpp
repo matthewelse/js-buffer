@@ -28,7 +28,7 @@
 typedef struct {
     uint8_t* buffer;
     size_t length;
-} buffer_t;
+} js_buffer_t;
 
 DECLARE_CLASS_FUNCTION(Buffer, getUint8) {
     CHECK_ARGUMENT_COUNT(Buffer, getUint8, (args_count == 1));
@@ -37,7 +37,7 @@ DECLARE_CLASS_FUNCTION(Buffer, getUint8) {
     uintptr_t native_ptr;
     jerry_get_object_native_handle(this_obj, &native_ptr);
 
-    buffer_t* buf = (buffer_t*)native_ptr;
+    js_buffer_t* buf = (js_buffer_t*)native_ptr;
 
     size_t offset = jerry_get_number_value(args[0]);
 
@@ -55,7 +55,7 @@ DECLARE_CLASS_FUNCTION(Buffer, getUint16) {
     uintptr_t native_ptr;
     jerry_get_object_native_handle(this_obj, &native_ptr);
 
-    buffer_t* buf = (buffer_t*)native_ptr;
+    js_buffer_t* buf = (js_buffer_t*)native_ptr;
 
     size_t offset = jerry_get_number_value(args[0]);
 
@@ -74,7 +74,7 @@ DECLARE_CLASS_FUNCTION(Buffer, getUint32) {
     uintptr_t native_ptr;
     jerry_get_object_native_handle(this_obj, &native_ptr);
 
-    buffer_t* buf = (buffer_t*)native_ptr;
+    js_buffer_t* buf = (js_buffer_t*)native_ptr;
 
     size_t offset = jerry_get_number_value(args[0]);
 
@@ -93,7 +93,7 @@ DECLARE_CLASS_FUNCTION(Buffer, getFloat32) {
     uintptr_t native_ptr;
     jerry_get_object_native_handle(this_obj, &native_ptr);
 
-    buffer_t* buf = (buffer_t*)native_ptr;
+    js_buffer_t* buf = (js_buffer_t*)native_ptr;
 
     size_t offset = jerry_get_number_value(args[0]);
 
@@ -112,7 +112,7 @@ DECLARE_CLASS_FUNCTION(Buffer, getFloat64) {
     uintptr_t native_ptr;
     jerry_get_object_native_handle(this_obj, &native_ptr);
 
-    buffer_t* buf = (buffer_t*)native_ptr;
+    js_buffer_t* buf = (js_buffer_t*)native_ptr;
 
     size_t offset = jerry_get_number_value(args[0]);
 
@@ -132,7 +132,7 @@ DECLARE_CLASS_FUNCTION(Buffer, setUint8) {
     uintptr_t native_ptr;
     jerry_get_object_native_handle(this_obj, &native_ptr);
 
-    buffer_t* buf = (buffer_t*)native_ptr;
+    js_buffer_t* buf = (js_buffer_t*)native_ptr;
 
     size_t offset = jerry_get_number_value(args[0]);
     uint8_t data = jerry_get_number_value(args[1]);
@@ -152,7 +152,7 @@ DECLARE_CLASS_FUNCTION(Buffer, setUint16) {
     uintptr_t native_ptr;
     jerry_get_object_native_handle(this_obj, &native_ptr);
 
-    buffer_t* buf = (buffer_t*)native_ptr;
+    js_buffer_t* buf = (js_buffer_t*)native_ptr;
 
     size_t offset = jerry_get_number_value(args[0]);
     uint16_t value = jerry_get_number_value(args[1]);
@@ -174,7 +174,7 @@ DECLARE_CLASS_FUNCTION(Buffer, setUint32) {
     uintptr_t native_ptr;
     jerry_get_object_native_handle(this_obj, &native_ptr);
 
-    buffer_t* buf = (buffer_t*)native_ptr;
+    js_buffer_t* buf = (js_buffer_t*)native_ptr;
 
     size_t offset = jerry_get_number_value(args[0]);
     uint32_t value = jerry_get_number_value(args[1]);
@@ -195,7 +195,7 @@ DECLARE_CLASS_FUNCTION(Buffer, setFloat32) {
     uintptr_t native_ptr;
     jerry_get_object_native_handle(this_obj, &native_ptr);
 
-    buffer_t* buf = (buffer_t*)native_ptr;
+    js_buffer_t* buf = (js_buffer_t*)native_ptr;
 
     size_t offset = jerry_get_number_value(args[0]);
     float value = jerry_get_number_value(args[1]);
@@ -216,7 +216,7 @@ DECLARE_CLASS_FUNCTION(Buffer, setFloat64) {
     uintptr_t native_ptr;
     jerry_get_object_native_handle(this_obj, &native_ptr);
 
-    buffer_t* buf = (buffer_t*)native_ptr;
+    js_buffer_t* buf = (js_buffer_t*)native_ptr;
 
     size_t offset = jerry_get_number_value(args[0]);
     double value = jerry_get_number_value(args[1]);
@@ -235,19 +235,19 @@ DECLARE_CLASS_FUNCTION(Buffer, toUint8Array) {
     uintptr_t native_ptr;
     jerry_get_object_native_handle(this_obj, &native_ptr);
 
-    buffer_t* buf = (buffer_t*)native_ptr;
+    js_buffer_t* buf = (js_buffer_t*)native_ptr;
     jerry_value_t array = jerry_create_array(buf->length);
 
     for (size_t i = 0; i < buf->length; i++) {
-        jerry_set_property_by_index(array, jerry_create_number_value(buf->buffer[i]));
+        jerry_set_property_by_index(array, i, jerry_create_number(buf->buffer[i]));
     }
 
     return array;
 }
 
 void NAME_FOR_CLASS_NATIVE_DESTRUCTOR(Buffer) (uintptr_t handle) {
-    delete[] ((buffer_t*)handle)->buffer;
-    delete (buffer_t*)handle;
+    delete[] ((js_buffer_t*)handle)->buffer;
+    delete (js_buffer_t*)handle;
 }
 
 /**
@@ -260,7 +260,7 @@ DECLARE_CLASS_CONSTRUCTOR(Buffer) {
     CHECK_ARGUMENT_TYPE_ALWAYS(Buffer, __constructor, 0, number);
 
     size_t count = jerry_get_number_value(args[0]);
-    buffer_t* buf = new buffer_t;
+    js_buffer_t* buf = new js_buffer_t;
     buf->buffer = new uint8_t[count];
     buf->length = count;
     uintptr_t native_ptr = (uintptr_t)buf;
