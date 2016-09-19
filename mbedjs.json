@@ -1,0 +1,9 @@
+{
+    "source": [
+        "."
+    ],
+    "includes": [
+        "buffer/lib_buffer.h"
+    ],
+    "name": "buffer"
+}
