@@ -238,15 +238,15 @@ DECLARE_CLASS_FUNCTION(Buffer, toUint8Array) {
     buffer_t* buf = (buffer_t*)native_ptr;
     jerry_value_t array = jerry_create_array(buf->length);
 
-    for (size_t i = 0; i < buf.length; i++) {
-        jerry_set_property_by_index(array, jerry_create_number_value(buf.buffer[i]));
+    for (size_t i = 0; i < buf->length; i++) {
+        jerry_set_property_by_index(array, jerry_create_number_value(buf->buffer[i]));
     }
 
     return array;
 }
 
 void NAME_FOR_CLASS_NATIVE_DESTRUCTOR(Buffer) (uintptr_t handle) {
-    delete[] (buffer_t*)handle->buffer;
+    delete[] ((buffer_t*)handle)->buffer;
     delete (buffer_t*)handle;
 }
 
@@ -261,8 +261,8 @@ DECLARE_CLASS_CONSTRUCTOR(Buffer) {
 
     size_t count = jerry_get_number_value(args[0]);
     buffer_t* buf = new buffer_t;
-    buf.buffer = new uint8_t[count];
-    buf.length = count;
+    buf->buffer = new uint8_t[count];
+    buf->length = count;
     uintptr_t native_ptr = (uintptr_t)buf;
 
     jerry_value_t js_object = jerry_create_object();
