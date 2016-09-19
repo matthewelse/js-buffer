@@ -23,7 +23,7 @@
 #ifndef _JERRYSCRIPT_LIB_BUFFER_H
 #define _JERRYSCRIPT_LIB_BUFFER_H
 
-#include "analog-in/analog_in_js.h"
+#include "buffer/buffer_js.h"
 #include "jerryscript-mbed-library-registry/wrap_tools.h"
 
 DECLARE_JS_WRAPPER_REGISTRATION (buffer)
